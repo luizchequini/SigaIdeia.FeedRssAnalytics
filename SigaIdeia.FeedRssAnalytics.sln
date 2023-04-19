@@ -3,9 +3,26 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{0F500F6B-4E81-4E60-91EE-1AF9E3A1BCDB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SigaIdeia.FeedRssAnalyticsApi", "src\SigaIdeia.FeedRssAnalyticsApi\SigaIdeia.FeedRssAnalyticsApi.csproj", "{F5E39A75-8BBE-4355-A7A0-55A69D38864C}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F5E39A75-8BBE-4355-A7A0-55A69D38864C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5E39A75-8BBE-4355-A7A0-55A69D38864C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5E39A75-8BBE-4355-A7A0-55A69D38864C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5E39A75-8BBE-4355-A7A0-55A69D38864C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F5E39A75-8BBE-4355-A7A0-55A69D38864C} = {0F500F6B-4E81-4E60-91EE-1AF9E3A1BCDB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {86C0E6B0-2187-42F7-9294-AB5A1513F904}
