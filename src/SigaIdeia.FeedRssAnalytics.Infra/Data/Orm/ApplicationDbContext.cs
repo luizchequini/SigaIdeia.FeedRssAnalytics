@@ -17,13 +17,13 @@ namespace SigaIdeia.FeedRssAnalytics.Infra.Data.Orm
                 property.SetColumnType("varchar(90)");
             }
 
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-
             foreach (var relationShip in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {
                 relationShip.DeleteBehavior = DeleteBehavior.ClientSetNull;
             }
 
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+            
             base.OnModelCreating(modelBuilder);
         }
 

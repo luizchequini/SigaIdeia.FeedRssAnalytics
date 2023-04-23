@@ -14,7 +14,7 @@ namespace SigaIdeia.FeedRssAnalytics.Infra.Data.Mappings
             builder.Property(e => e.Link).HasColumnType("varchar(max)").IsRequired();
             builder.Property(e => e.Title).HasColumnType("varchar(300)").IsRequired();
             builder.Property(e => e.Type).HasColumnType("varchar(50)").IsRequired();
-            builder.Property(e => e.Category).HasColumnType("varchar(50)").IsRequired();
+            builder.Property(e => e.Category).HasColumnType("varchar(150)").IsRequired();
             builder.Property(e => e.Views).HasColumnType("varchar(max)");
         }
     }
