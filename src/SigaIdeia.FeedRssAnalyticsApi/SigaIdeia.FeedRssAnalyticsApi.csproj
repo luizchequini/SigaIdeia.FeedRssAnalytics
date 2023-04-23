@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SigaIdeia.FeedRssAnalytics.Domain\SigaIdeia.FeedRssAnalytics.Domain.csproj" />
+    <ProjectReference Include="..\SigaIdeia.FeedRssAnalytics.Infra\SigaIdeia.FeedRssAnalytics.Infra.csproj" />
   </ItemGroup>
 
 </Project>

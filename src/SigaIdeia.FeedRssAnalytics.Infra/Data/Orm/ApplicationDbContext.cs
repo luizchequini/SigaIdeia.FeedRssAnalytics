@@ -11,6 +11,19 @@ namespace SigaIdeia.FeedRssAnalytics.Infra.Data.Orm
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            foreach(var property in modelBuilder.Model.GetEntityTypes().SelectMany(
+                e=>e.GetProperties().Where(p=>p.ClrType == typeof(string))))
+            {
+                property.SetColumnType("varchar(90)");
+            }
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
+            foreach (var relationShip in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                relationShip.DeleteBehavior = DeleteBehavior.ClientSetNull;
+            }
+
             base.OnModelCreating(modelBuilder);
         }
 

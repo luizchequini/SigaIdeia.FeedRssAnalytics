@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using SigaIdeia.FeedRssAnalytics.Infra.Data.Orm;
 
 namespace SigaIdeia.FeedRssAnalyticsApi
 {
@@ -6,6 +8,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            ConfigurationManager configuration = builder.Configuration;
 
             // Add services to the container.
 
@@ -13,6 +16,8 @@ namespace SigaIdeia.FeedRssAnalyticsApi
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddDbContext<ApplicationDbContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("ConnStr")));
 
             var app = builder.Build();
 
