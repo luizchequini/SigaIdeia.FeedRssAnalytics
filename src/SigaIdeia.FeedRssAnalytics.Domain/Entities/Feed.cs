@@ -1,6 +1,6 @@
-﻿namespace SigaIdeia.FeedRssAnalyticsApi.DTOs
+﻿namespace SigaIdeia.FeedRssAnalytics.Domain.Entities
 {
-    public class Feeds
+    public class Feed
     {
         public string? Link { get; set; }
         public string? Title { get; set; }
@@ -9,7 +9,7 @@
         public string? Content { get; set; }
         public DateTime PubDate { get; set; } = DateTime.Now;
 
-        public Feeds()
+        public Feed()
         {
             Link = string.Empty;
             Title = string.Empty;

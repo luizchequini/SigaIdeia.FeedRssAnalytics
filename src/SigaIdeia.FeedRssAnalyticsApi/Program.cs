@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using SigaIdeia.FeedRssAnalytics.Domain.Repositories.AbstractRepository;
 using SigaIdeia.FeedRssAnalytics.Infra.Data.Orm;
+using SigaIdeia.FeedRssAnalytics.Infra.Repositories.ImplementationsReposirory;
 
 namespace SigaIdeia.FeedRssAnalyticsApi
 {
@@ -18,6 +20,8 @@ namespace SigaIdeia.FeedRssAnalyticsApi
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("ConnStr")));
+
+            builder.Services.AddScoped<IQueryRepository, QueryRepository>();
 
             var app = builder.Build();
 

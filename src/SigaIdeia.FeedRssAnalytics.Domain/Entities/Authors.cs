@@ -1,4 +1,4 @@
-﻿namespace SigaIdeia.FeedRssAnalyticsApi.DTOs
+﻿namespace SigaIdeia.FeedRssAnalytics.Domain.Entities
 {
     public class Authors
     {
