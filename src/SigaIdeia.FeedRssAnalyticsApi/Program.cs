@@ -25,6 +25,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("ConnStr")));
 
             builder.Services.AddScoped<IQueryRepository, QueryRepository>();
+            builder.Services.AddScoped<IQueryADORepository, QueryADORepository>();
 
             var app = builder.Build();
 
