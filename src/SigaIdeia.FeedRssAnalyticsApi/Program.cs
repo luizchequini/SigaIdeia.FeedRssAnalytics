@@ -3,6 +3,7 @@ using SigaIdeia.FeedRssAnalytics.Domain.Repositories.AbstractRepository;
 using SigaIdeia.FeedRssAnalytics.Infra.Data.Orm;
 using SigaIdeia.FeedRssAnalytics.Infra.Repositories.ImplementationsReposirory;
 using SigaIdeia.FeedRssAnalyticsApi.Configurations.AutoMappers;
+using SigaIdeia.FeedRssAnalyticsApi.Configurations.Extensions;
 
 namespace SigaIdeia.FeedRssAnalyticsApi
 {
@@ -20,7 +21,9 @@ namespace SigaIdeia.FeedRssAnalyticsApi
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+
+            //builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerConfiguration();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("ConnStr")));
 
@@ -32,8 +35,10 @@ namespace SigaIdeia.FeedRssAnalyticsApi
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                //app.UseSwagger();
+                //app.UseSwaggerUI();
+
+                app.useSwaggerConfiguration();
             }
 
             app.UseHttpsRedirection();
