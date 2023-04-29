@@ -1,4 +1,5 @@
-﻿using SigaIdeia.FeedRssAnalytics.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using SigaIdeia.FeedRssAnalytics.Domain.Entities;
 using SigaIdeia.FeedRssAnalytics.Domain.Repositories.AbstractRepository;
 using SigaIdeia.FeedRssAnalytics.Infra.Data.Orm;
 
@@ -24,14 +25,18 @@ namespace SigaIdeia.FeedRssAnalytics.Infra.Repositories.ImplementationsReposiror
             .OrderBy(group => group.Author);
         }
 
-        public IQueryable<Category> GetCategoriesByAuthorId(string authorId)
+        public async Task<IEnumerable<Category>> GetCategoriesByAuthorId(string authorId)
         {
-            return from x in _context.ArticleMatrices?.Where(x => x.AuthorId == authorId).GroupBy(x => x.Category)
-                   select new Category
-                   {
-                       Name = x.FirstOrDefault().Category,
-                       Count = x.Count()
-                   };
+            var retval = await _context.ArticleMatrices
+                 .Where(x => x.AuthorId == authorId)
+                 .GroupBy(x => x.Category)
+                 .Select(group => new Category
+                 {
+                     Name = group.FirstOrDefault().Category,
+                     Count = group.Count()
+                 }).ToListAsync();
+
+            return retval;
         }
     }
 }

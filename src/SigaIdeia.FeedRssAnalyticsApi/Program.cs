@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SigaIdeia.FeedRssAnalytics.Domain.Repositories.AbstractRepository;
 using SigaIdeia.FeedRssAnalytics.Infra.Data.Orm;
 using SigaIdeia.FeedRssAnalytics.Infra.Repositories.ImplementationsReposirory;
+using SigaIdeia.FeedRssAnalyticsApi.Configurations.AutoMappers;
 
 namespace SigaIdeia.FeedRssAnalyticsApi
 {
@@ -13,6 +14,8 @@ namespace SigaIdeia.FeedRssAnalyticsApi
             ConfigurationManager configuration = builder.Configuration;
 
             // Add services to the container.
+
+            builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -4,7 +4,7 @@ namespace SigaIdeia.FeedRssAnalytics.Domain.Repositories.AbstractRepository
 {
     public interface IQueryRepository
     {
-        IQueryable<Category> GetCategoriesByAuthorId(string authorId);
+        Task<IEnumerable<Category>> GetCategoriesByAuthorId(string authorId);
         IQueryable<Authors> GetAuthors();
     }
 }

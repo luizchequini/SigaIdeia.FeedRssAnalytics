@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using SigaIdeia.FeedRssAnalytics.Domain.Entities;
 using SigaIdeia.FeedRssAnalytics.Domain.Repositories.AbstractRepository;
 using SigaIdeia.FeedRssAnalytics.Infra.Data.Orm;
@@ -17,24 +18,36 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
         private static readonly object _lock = new();
 
         private readonly IQueryRepository _queryRepository;
+        private readonly IMapper _mapper;
 
-        public AnalyticsController(ApplicationDbContext context, IConfiguration configuration, IQueryRepository queryRepository)
+        public AnalyticsController(ApplicationDbContext context, IConfiguration configuration, IQueryRepository queryRepository, IMapper mapper)
         {
             _context = context;
             _configuration = configuration;
             _queryRepository = queryRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        [Route("GetCategoriesByAuthorId/{authorId}")]
-        public IQueryable<Category> GetCategoriesByAuthorId(string authorId)
+        [Route("GetCategory/{authorId}")]
+        [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<CategoryDto>>> GetCategory(string? authorId)
         {
-            return _queryRepository.GetCategoriesByAuthorId(authorId);
+            if(string.IsNullOrWhiteSpace(authorId))
+            {
+                return BadRequest(string.Empty);
+            }
+
+            var categories = _mapper.Map<List<CategoryDto>>(await _queryRepository.GetCategoriesByAuthorId(authorId));   
+            
+            return Ok(categories);
         }
 
         [HttpGet]
         [Route("GetAuthors")]
-        public IQueryable<Authors> GetAuthors()
+        public IQueryable<Authors>? GetAuthors()
         {
             return _queryRepository.GetAuthors();
         }
