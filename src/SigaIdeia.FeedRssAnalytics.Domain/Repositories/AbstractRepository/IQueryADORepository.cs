@@ -6,5 +6,7 @@ namespace SigaIdeia.FeedRssAnalytics.Domain.Repositories.AbstractRepository
     {
         Task<IEnumerable<Category>> GetCategoriesByAuthorId(string authorId);
         Task<IEnumerable<Authors>> GetAuthors();
+
+        Task<IEnumerable<ArticleMatrix>> GetAllByArticlesByAuthorId(string authorId);
     }
 }

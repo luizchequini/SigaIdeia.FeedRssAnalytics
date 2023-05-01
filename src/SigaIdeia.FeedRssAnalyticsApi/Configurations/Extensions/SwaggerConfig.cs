@@ -1,4 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace SigaIdeia.FeedRssAnalyticsApi.Configurations.Extensions
 {
@@ -26,7 +27,11 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Configurations.Extensions
                         Name = "MIT",
                         Url = new Uri("https://opensource.org/licenses/MIT")
                     },
+                    TermsOfService = new Uri("https://luizchequini.com")
                 });
+
+                var xmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFileName));
 
                 #region: Security
                 //    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()

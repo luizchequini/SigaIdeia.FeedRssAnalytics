@@ -13,6 +13,7 @@ namespace SigaIdeia.FeedRssAnalytics.Infra.Repositories.ImplementationsReposiror
             _configuration = configuration;
         }
 
+
         public async Task<IEnumerable<Authors>> GetAuthors()
         {
             var queryExecuted = ExecuteQuery(
@@ -42,6 +43,30 @@ namespace SigaIdeia.FeedRssAnalytics.Infra.Repositories.ImplementationsReposiror
             return await Task.FromResult(queryExecuted);
         }
 
+        public async Task<IEnumerable<ArticleMatrix>> GetAllByArticlesByAuthorId(string authorId)
+        {
+            var queryExecuted = ExecuteQuery(
+            "SELECT * FROM ArticleMatrices WHERE AuthorId = @AuthorId ORDER BY PubDate DESC",
+            new SqlParameter("@AuthorId", authorId),
+            reader => new ArticleMatrix
+            {
+                Id = (int)reader["Id"],
+                AuthorId = reader["AuthorId"].ToString(),
+                Author = reader["Author"].ToString(),
+                Link = reader["Link"].ToString(),
+                Title = reader["Title"].ToString(),
+                Type = reader["Type"].ToString(),
+                Category = reader["Category"].ToString(),
+                Views = reader["Views"].ToString(),
+                ViewsCount = (decimal)reader["ViewsCount"],
+                Likes = (int)reader["Likes"],
+                PubDate = (DateTime)reader["PubDate"]
+            });
+
+            return await Task.FromResult(queryExecuted);
+        }
+
+        #region: CONSULTA ADO.NET PURO - PRAMETRIZADA E GENÉRICA
         private IEnumerable<T> ExecuteQuery<T>(string query, SqlParameter? sqlParameter, Func<SqlDataReader, T> map)
         {
             var result = new List<T>();
@@ -77,5 +102,6 @@ namespace SigaIdeia.FeedRssAnalytics.Infra.Repositories.ImplementationsReposiror
                 }
             }
         }
+        #endregion
     }
 }

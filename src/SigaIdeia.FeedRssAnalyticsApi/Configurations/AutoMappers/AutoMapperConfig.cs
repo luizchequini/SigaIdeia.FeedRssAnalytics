@@ -11,6 +11,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Configurations.AutoMappers
             CreateMap<Category, CategoryDto>().ReverseMap();
             CreateMap<Authors, AuthorsDto>().ReverseMap();
             CreateMap<Feed, FeedDto>().ReverseMap();
+            CreateMap<ArticleMatrix, ArticleMatrixDto>().ReverseMap();
         }
     }
 }
