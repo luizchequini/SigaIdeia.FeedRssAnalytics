@@ -12,18 +12,11 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
     [ApiController]
     public class AnalyticsController : ControllerBase
     {
-        readonly CultureInfo _culture = new("en-US");
-        private readonly ApplicationDbContext _context;
-        private readonly IConfiguration _configuration;
-        private static readonly object _lock = new();
-
         private readonly IQueryRepository _queryRepository;
         private readonly IMapper _mapper;
 
-        public AnalyticsController(ApplicationDbContext context, IConfiguration configuration, IQueryRepository queryRepository, IMapper mapper)
+        public AnalyticsController(IQueryRepository queryRepository, IMapper mapper)
         {
-            _context = context;
-            _configuration = configuration;
             _queryRepository = queryRepository;
             _mapper = mapper;
         }

@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using SigaIdeia.FeedRssAnalytics.Domain.Entities;
-using SigaIdeia.FeedRssAnalytics.Infra.Data.Orm;
+using SigaIdeia.FeedRssAnalytics.Domain.Repositories.AbstractRepository;
 using SigaIdeia.FeedRssAnalyticsApi.DTOs;
 
 namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
@@ -9,10 +10,13 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
     [ApiController]
     public class FilterController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        public FilterController(ApplicationDbContext context)
+        private readonly IArticleMatrixRepository _articleMatrixRepository;
+        private readonly IMapper _mapper;
+
+        public FilterController(IArticleMatrixRepository articleMatrixRepository, IMapper mapper)
         {
-            _context = context;
+            _articleMatrixRepository = articleMatrixRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -21,14 +25,9 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Produces("application/json")]
-        public IQueryable<Category> GetDistinctCategory() 
+        public IQueryable<Category> GetDistinctCategory()
         {
-            return from x in _context.ArticleMatrices?.GroupBy(x => x.Category)
-                   select new Category
-                   {
-                       Name = x.FirstOrDefault().Category,
-                       Count = x.Count()
-                   };
+            return _articleMatrixRepository.GetDistinctCategory();
         }
     }
 }
