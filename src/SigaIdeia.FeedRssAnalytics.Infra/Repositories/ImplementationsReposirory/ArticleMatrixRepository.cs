@@ -21,5 +21,13 @@ namespace SigaIdeia.FeedRssAnalytics.Infra.Repositories.ImplementationsReposiror
                        Count = x.Count()
                    };
         }
+
+        public async Task<IEnumerable<ArticleMatrix>> GetCategoryAndOrTitle()
+        {
+            var data = new List<ArticleMatrix>();
+            var source = _context.ArticleMatrices?.AsQueryable();
+
+            return await Task.FromResult(source.AsEnumerable());
+        }
     }
 }

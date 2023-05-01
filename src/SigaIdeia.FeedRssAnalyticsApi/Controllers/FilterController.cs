@@ -29,5 +29,12 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
         {
             return _articleMatrixRepository.GetDistinctCategory();
         }
+
+        [HttpGet]
+        [Route("GetCategoryAndOrTitle")]
+        public async Task<ActionResult<ArticleMatrix>> GetCategoryAndOrTitle()
+        {
+            return Ok(Task.FromResult(await _articleMatrixRepository.GetCategoryAndOrTitle()));
+        }
     }
 }
