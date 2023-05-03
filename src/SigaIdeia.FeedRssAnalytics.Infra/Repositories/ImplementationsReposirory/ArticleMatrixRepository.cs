@@ -26,25 +26,14 @@ namespace SigaIdeia.FeedRssAnalytics.Infra.Repositories.ImplementationsReposiror
 
         public async Task<IEnumerable<ArticleMatrix>> GetCategoryAndOrTitle(string? category = null, string? title = null)
         {
-            var data = new List<ArticleMatrix>();
             var source = _context.ArticleMatrices?.AsQueryable();
 
-            if(category.IsNullOrEmpty() && !title.IsNullOrEmpty()) 
+            if (!string.IsNullOrEmpty(category) || !string.IsNullOrEmpty(title))
             {
-                data = await source.Where(x => x.Title.Contains(title)).ToListAsync();
+                source = source?.Where(x => (category == null || x.Category.Contains(category)) && title == null || x.Title.Contains(title));
             }
-            else if(!category.IsNullOrEmpty() &&  !title.IsNullOrEmpty())
-            {
-                data = await source.Where(x => x.Category.Contains(category) && x.Title.Contains(title)).ToListAsync();
-            }
-            else if(!category.IsNullOrEmpty() && title.IsNullOrEmpty())
-            {
-                data = await source.Where(x => x.Category.Contains(category)).ToListAsync();
-            }
-            else
-            {
-                data = await source.ToListAsync();
-            }
+
+            var data = await source.ToArrayAsync();
 
             return await Task.FromResult(data);
         }
