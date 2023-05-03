@@ -1,4 +1,6 @@
-﻿using SigaIdeia.FeedRssAnalytics.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using SigaIdeia.FeedRssAnalytics.Domain.Entities;
 using SigaIdeia.FeedRssAnalytics.Domain.Repositories.AbstractRepository;
 using SigaIdeia.FeedRssAnalytics.Infra.Data.Orm;
 
@@ -22,12 +24,29 @@ namespace SigaIdeia.FeedRssAnalytics.Infra.Repositories.ImplementationsReposiror
                    };
         }
 
-        public async Task<IEnumerable<ArticleMatrix>> GetCategoryAndOrTitle()
+        public async Task<IEnumerable<ArticleMatrix>> GetCategoryAndOrTitle(string? category = null, string? title = null)
         {
             var data = new List<ArticleMatrix>();
             var source = _context.ArticleMatrices?.AsQueryable();
 
-            return await Task.FromResult(source.AsEnumerable());
+            if(category.IsNullOrEmpty() && !title.IsNullOrEmpty()) 
+            {
+                data = await source.Where(x => x.Title.Contains(title)).ToListAsync();
+            }
+            else if(!category.IsNullOrEmpty() &&  !title.IsNullOrEmpty())
+            {
+                data = await source.Where(x => x.Category.Contains(category) && x.Title.Contains(title)).ToListAsync();
+            }
+            else if(!category.IsNullOrEmpty() && title.IsNullOrEmpty())
+            {
+                data = await source.Where(x => x.Category.Contains(category)).ToListAsync();
+            }
+            else
+            {
+                data = await source.ToListAsync();
+            }
+
+            return await Task.FromResult(data);
         }
     }
 }

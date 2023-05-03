@@ -32,9 +32,11 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
 
         [HttpGet]
         [Route("GetCategoryAndOrTitle")]
-        public async Task<ActionResult<ArticleMatrix>> GetCategoryAndOrTitle()
+        public async Task<ActionResult<ArticleMatrix>> GetCategoryAndOrTitle(
+                                                        [FromQuery]string? category = null, 
+                                                        [FromQuery]string? title = null)
         {
-            return Ok(Task.FromResult(await _articleMatrixRepository.GetCategoryAndOrTitle()));
+            return Ok(Task.FromResult(await _articleMatrixRepository.GetCategoryAndOrTitle(category, title)));
         }
     }
 }

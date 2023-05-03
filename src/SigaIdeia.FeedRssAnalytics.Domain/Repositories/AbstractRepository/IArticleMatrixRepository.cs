@@ -6,6 +6,6 @@ namespace SigaIdeia.FeedRssAnalytics.Domain.Repositories.AbstractRepository
     {
         IQueryable<Category> GetDistinctCategory();
 
-        Task<IEnumerable<ArticleMatrix>> GetCategoryAndOrTitle();
+        Task<IEnumerable<ArticleMatrix>> GetCategoryAndOrTitle(string? category = null, string? title = null);
     }
 }
