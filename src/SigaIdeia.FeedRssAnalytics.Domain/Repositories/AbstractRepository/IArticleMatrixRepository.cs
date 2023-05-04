@@ -1,4 +1,5 @@
 ﻿using SigaIdeia.FeedRssAnalytics.Domain.Entities;
+using SigaIdeia.FeedRssAnalytics.Domain.Services;
 
 namespace SigaIdeia.FeedRssAnalytics.Domain.Repositories.AbstractRepository
 {
@@ -6,6 +7,6 @@ namespace SigaIdeia.FeedRssAnalytics.Domain.Repositories.AbstractRepository
     {
         IQueryable<Category> GetDistinctCategory();
 
-        Task<IEnumerable<ArticleMatrix>> GetCategoryAndOrTitle(string? category = null, string? title = null);
+        Task<PagedResultFeed<ArticleMatrix>> GetCategoryAndOrTitle(int pageIndex, int pageSize, string? category = null, string? title = null);
     }
 }
