@@ -33,10 +33,35 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
         }
 
         [HttpGet]
+        [Route("GetCategoryAndTitle")]
+        [Produces("application/json")]
+        public async Task<ActionResult<PagedResultFeed<ArticleMatrix>>> GetCategoryAndTitle(
+            [FromQuery] int pageIndex = 1, int pageSize = 10, string? category = null, string? title = null)
+        {
+            var artigos = await _articleMatrixRepository.GetCategoryAndTitle(pageIndex, pageSize, category, title);
+
+            var metaData = new
+            {
+                artigos.TotalPages,
+                artigos.PageIndex,
+                artigos.PageSize,
+                artigos.HasPrevious,
+                artigos.HasNext,
+                artigos.TotalResults
+            };
+
+            Response.Headers.Add("Content-Type", "application/json");
+            Response.Headers.Add("x-Pagination", JsonConvert.SerializeObject(metaData));
+            Response.Headers.Add("x-Pagination-Result", $"Retornando {artigos.TotalResults} Registros do Banco de Dados");
+
+            return Ok(artigos);
+        }
+
+        [HttpGet]
         [Route("GetCategoryAndOrTitle")]
         [Produces("application/json")]
         public async Task<ActionResult<PagedResultFeed<ArticleMatrix>>> GetCategoryAndOrTitle(
-                    [FromQuery] int pageIndex, int pageSize, string? category = null, string? title = null)
+                    [FromQuery] int pageIndex = 1, int pageSize = 10, string? category = null, string? title = null)
         {
             var artigos = await _articleMatrixRepository.GetCategoryAndOrTitle(pageIndex, pageSize, category, title);
 

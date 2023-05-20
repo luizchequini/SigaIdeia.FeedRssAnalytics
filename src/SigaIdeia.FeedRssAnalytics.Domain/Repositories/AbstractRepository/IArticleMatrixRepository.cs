@@ -8,5 +8,7 @@ namespace SigaIdeia.FeedRssAnalytics.Domain.Repositories.AbstractRepository
         IQueryable<Category> GetDistinctCategory();
 
         Task<PagedResultFeed<ArticleMatrix>> GetCategoryAndOrTitle(int pageIndex, int pageSize, string? category = null, string? title = null);
+        
+        Task<PagedResultFeed<ArticleMatrix>> GetCategoryAndTitle(int pageIndex, int pageSize, string? category = null, string? title = null);
     }
 }

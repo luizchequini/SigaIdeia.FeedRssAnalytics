@@ -24,6 +24,18 @@ namespace SigaIdeia.FeedRssAnalytics.Infra.Repositories.ImplementationsReposiror
                        Count = x.Count()
                    };
         }
+        public async Task<PagedResultFeed<ArticleMatrix>> GetCategoryAndTitle(int pageIndex, int pageSize, string? category = null, string? title = null)
+        {
+            var source = _context.ArticleMatrices?.AsQueryable();
+
+            if (!string.IsNullOrEmpty(category) && !string.IsNullOrEmpty(title))
+            {
+                source = source?.Where(x => (category == null || x.Category.Contains(category)) && title == null || x.Title.Contains(title));
+            }
+
+            var data = await source.ToListAsync();
+            return Paginate(data, pageIndex, pageSize);
+        }
 
         public async Task<PagedResultFeed<ArticleMatrix>> GetCategoryAndOrTitle(int pageIndex, int pageSize, string? category = null, string? title = null)
         {
@@ -38,12 +50,12 @@ namespace SigaIdeia.FeedRssAnalytics.Infra.Repositories.ImplementationsReposiror
             return Paginate(data, pageIndex, pageSize);
         }
 
-        private PagedResultFeed<ArticleMatrix> Paginate(IEnumerable<ArticleMatrix> data, int pageIndex, int pageSize)
+        private static PagedResultFeed<ArticleMatrix> Paginate(IEnumerable<ArticleMatrix> data, int pageIndex, int pageSize)
         {
             int count = data.Count();
             data = data.Skip(pageSize * (pageIndex - 1)).Take(pageSize);
 
-            return new PagedResultFeed<ArticleMatrix>()
+            return new PagedResultFeed<ArticleMatrix>
             {
                 Data = data,
                 TotalResults = count,
@@ -51,8 +63,9 @@ namespace SigaIdeia.FeedRssAnalytics.Infra.Repositories.ImplementationsReposiror
                 PageSize = pageSize,
                 TotalPages = (int)Math.Ceiling(count / (double)pageSize),
                 HasPrevious = pageIndex > 1,
-                HasNext = pageIndex < count - 1,
+                HasNext = pageIndex < pageSize - 1,
             };
         }
+
     }
 }
