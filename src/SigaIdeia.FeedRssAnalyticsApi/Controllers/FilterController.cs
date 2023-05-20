@@ -82,15 +82,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
         {
             var artigos = await _articleMatrixRepository.GetCategoryAndTitle(pageIndex, pageSize, category, title);
 
-            var metaData = new
-            {
-                artigos.TotalPages,
-                artigos.PageIndex,
-                artigos.PageSize,
-                artigos.HasPrevious,
-                artigos.HasNext,
-                artigos.TotalResults
-            };
+            var metaData = new ArticlesMetaDataDto(artigos);
 
             Response.Headers.Add("Content-Type", "application/json");
             Response.Headers.Add("x-Pagination", JsonConvert.SerializeObject(metaData));
@@ -125,15 +117,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
         {
             var artigos = await _articleMatrixRepository.GetCategoryAndOrTitle(pageIndex, pageSize, category, title);
 
-            var metaData = new
-            {
-                artigos.TotalPages,
-                artigos.PageIndex,
-                artigos.PageSize,
-                artigos.HasPrevious,
-                artigos.HasNext,
-                artigos.TotalResults
-            };
+            var metaData = new ArticlesMetaDataDto(artigos);
 
             Response.Headers.Add("Content-Type", "application/json");
             Response.Headers.Add("x-Pagination", JsonConvert.SerializeObject(metaData));
@@ -168,15 +152,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
         {
             var artigos = await _articleMatrixRepository.GetFilterByYear(pageIndex, pageSize, query);
 
-            var metaData = new
-            {
-                artigos.TotalPages,
-                artigos.PageIndex,
-                artigos.PageSize,
-                artigos.HasPrevious,
-                artigos.HasNext,
-                artigos.TotalResults
-            };
+            var metaData = new ArticlesMetaDataDto(artigos);
 
             Response.Headers.Add("Content-Type", "application/json");
             Response.Headers.Add("x-Pagination", JsonConvert.SerializeObject(metaData));
