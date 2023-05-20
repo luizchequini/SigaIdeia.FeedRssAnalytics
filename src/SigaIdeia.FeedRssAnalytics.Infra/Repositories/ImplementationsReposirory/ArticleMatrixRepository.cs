@@ -49,6 +49,16 @@ namespace SigaIdeia.FeedRssAnalytics.Infra.Repositories.ImplementationsReposiror
             var data = await source.ToListAsync();
             return Paginate(data, pageIndex, pageSize);
         }
+        public async Task<PagedResultFeed<ArticleMatrix>> GetFilterByYear(int pageIndex, int pageSize, int? query = null)
+        {
+            IEnumerable<ArticleMatrix>? data = new List<ArticleMatrix>();
+            
+            var source = _context?.ArticleMatrices?.AsQueryable();
+            
+            data = (query != null) ? await source.Where(x=>x.PubDate.Year >= query).ToListAsync() : await source.ToListAsync();
+
+            return Paginate(data, pageIndex, pageSize);
+        }
 
         private static PagedResultFeed<ArticleMatrix> Paginate(IEnumerable<ArticleMatrix> data, int pageIndex, int pageSize)
         {
