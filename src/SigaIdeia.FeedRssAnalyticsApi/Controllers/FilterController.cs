@@ -84,9 +84,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
 
             var metaData = new ArticlesMetaDataDto(artigos);
 
-            Response.Headers.Add("Content-Type", "application/json");
-            Response.Headers.Add("x-Pagination", JsonConvert.SerializeObject(metaData));
-            Response.Headers.Add("x-Pagination-Result", $"Voce esta na pagina {artigos.PageIndex} de {artigos.TotalPages} com total de {artigos.TotalResults} registros");
+            GenericResponseHeader(metaData);
 
             return Ok(artigos);
         }
@@ -119,9 +117,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
 
             var metaData = new ArticlesMetaDataDto(artigos);
 
-            Response.Headers.Add("Content-Type", "application/json");
-            Response.Headers.Add("x-Pagination", JsonConvert.SerializeObject(metaData));
-            Response.Headers.Add("x-Pagination-Result", $"Voce esta na pagina {artigos.PageIndex} de {artigos.TotalPages} com total de {artigos.TotalResults} registros");
+            GenericResponseHeader(metaData);
 
             return Ok(artigos);
         }
@@ -154,11 +150,17 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
 
             var metaData = new ArticlesMetaDataDto(artigos);
 
-            Response.Headers.Add("Content-Type", "application/json");
-            Response.Headers.Add("x-Pagination", JsonConvert.SerializeObject(metaData));
-            Response.Headers.Add("x-Pagination-Result", $"Voce esta na pagina {artigos.PageIndex} de {artigos.TotalPages} com total de {artigos.TotalResults} registros");
+            GenericResponseHeader(metaData);
 
             return Ok(artigos);
+        }
+
+        private void GenericResponseHeader(ArticlesMetaDataDto metadata)
+        {
+            Response.Headers.Add("Content-Type", "application/json");
+            Response.Headers.Add("x-Pagination", JsonConvert.SerializeObject(metadata));
+            Response.Headers.Add("x-Pagination-Result", $"Voce esta na pagina {metadata.PageIndex} de {metadata.TotalPages} com total de {metadata.TotalResults} registros");
+
         }
     }
 }
