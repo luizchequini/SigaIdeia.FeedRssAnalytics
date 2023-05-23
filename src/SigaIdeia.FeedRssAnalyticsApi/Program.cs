@@ -4,6 +4,8 @@ using SigaIdeia.FeedRssAnalytics.Infra.Data.Orm;
 using SigaIdeia.FeedRssAnalytics.Infra.Repositories.ImplementationsReposirory;
 using SigaIdeia.FeedRssAnalyticsApi.Configurations.AutoMappers;
 using SigaIdeia.FeedRssAnalyticsApi.Configurations.Extensions;
+using SigaIdeia.FeedRssAnalyticsApi.Configurations.FiltersAndAtttributes;
+using System.Net;
 
 namespace SigaIdeia.FeedRssAnalyticsApi
 {
@@ -18,7 +20,14 @@ namespace SigaIdeia.FeedRssAnalyticsApi
 
             builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(opt =>
+            {
+                opt.Filters.Add<GlobalProducesResponseTypeFilter>();
+                opt.Filters.Add(new GlobalProducesRonponseTypeAttributes(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest));
+                opt.Filters.Add(new GlobalProducesRonponseTypeAttributes(typeof(ErrorResponse), (int)HttpStatusCode.Unauthorized));
+                opt.Filters.Add(new GlobalProducesRonponseTypeAttributes(typeof(ErrorResponse), (int)HttpStatusCode.NotFound));
+                opt.Filters.Add(new GlobalProducesRonponseTypeAttributes(typeof(ErrorResponse), (int)HttpStatusCode.MethodNotAllowed));
+            });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
 

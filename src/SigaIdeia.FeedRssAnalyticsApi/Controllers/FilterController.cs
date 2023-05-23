@@ -13,12 +13,10 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
     public class FilterController : ControllerBase
     {
         private readonly IArticleMatrixRepository _articleMatrixRepository;
-        private readonly IMapper _mapper;
 
         public FilterController(IArticleMatrixRepository articleMatrixRepository, IMapper mapper)
         {
             _articleMatrixRepository = articleMatrixRepository;
-            _mapper = mapper;
         }
 
         /// <summary>
@@ -47,9 +45,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
         /// </remarks>
         [HttpGet]
         [Route("GetDistinctCategory")]
-        [ProducesResponseType(typeof(IQueryable<ArticleMatrixDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(IQueryable<ArticleMatrixDto>), 200)]
         [Produces("application/json")]
         public IQueryable<Category> GetDistinctCategory()
         {
@@ -73,9 +69,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
         /// </remarks>
         [HttpGet]
         [Route("GetCategoryAndTitle")]
-        [ProducesResponseType(typeof(IEnumerable<CategoryDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(PagedResultFeed<ArticleMatrix>), 200)]
         [Produces("application/json")]
         public async Task<ActionResult<PagedResultFeed<ArticleMatrix>>> GetCategoryAndTitle(
             [FromQuery] int pageIndex = 1, int pageSize = 10, string? category = null, string? title = null)
@@ -106,9 +100,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
         /// </remarks>
         [HttpGet]
         [Route("GetCategoryAndOrTitle")]
-        [ProducesResponseType(typeof(IEnumerable<CategoryDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(PagedResultFeed<ArticleMatrix>), 200)]
         [Produces("application/json")]
         public async Task<ActionResult<PagedResultFeed<ArticleMatrix>>> GetCategoryAndOrTitle(
             [FromQuery] int pageIndex = 1, int pageSize = 10, string? category = null, string? title = null)
@@ -139,9 +131,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
         /// </remarks>
         [HttpGet]
         [Route("GetFilterByYear")]
-        [ProducesResponseType(typeof(IEnumerable<CategoryDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(PagedResultFeed<ArticleMatrix>), 200)]
         [Produces("application/json")]
         public async Task<ActionResult<PagedResultFeed<ArticleMatrix>>> GetFilterByYear(
             [FromQuery] int pageIndex = 1, int pageSize = 10, int? query = null)

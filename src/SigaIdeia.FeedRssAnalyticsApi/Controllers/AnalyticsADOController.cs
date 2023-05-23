@@ -11,7 +11,6 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
     {
         private readonly IQueryADORepository _queryADORepository;
         private readonly IMapper _mapper;
-        private object iEnumAuthor;
 
         public AnalyticsADOController(IQueryADORepository queryADORepository, IMapper mapper)
         {
@@ -36,9 +35,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
         /// </remarks>
         [HttpGet]
         [Route("GetCategory/{authorId}")]
-        [ProducesResponseType(typeof(IEnumerable<CategoryDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(IEnumerable<CategoryDto>), 200)]
         [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategory(string? authorId)
         {
@@ -78,9 +75,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
         /// </remarks>
         [HttpGet]
         [Route("GetAuthors")]
-        [ProducesResponseType(typeof(IEnumerable<AuthorsDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(IEnumerable<AuthorsDto>), 200)]
         [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<AuthorsDto>>> GetAuthors()
         {
@@ -117,9 +112,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
         /// </remarks>
         [HttpGet]
         [Route("GetAll/{authorId}")]
-        [ProducesResponseType(typeof(IEnumerable<ArticleMatrixDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(IEnumerable<ArticleMatrixDto>), 200)]
         [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<ArticleMatrixDto>>> GetAll(string authorId)
         {
