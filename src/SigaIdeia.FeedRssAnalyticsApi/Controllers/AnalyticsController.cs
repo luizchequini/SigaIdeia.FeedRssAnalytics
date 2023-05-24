@@ -7,6 +7,8 @@ using HtmlAgilityPack;
 using System.Xml.Linq;
 using System.Globalization;
 using SigaIdeia.FeedRssAnalytics.Infra.Data.Orm;
+using System.Net.Http;
+using System.Diagnostics;
 
 namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
 {
@@ -22,10 +24,12 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
         private readonly IQueryRepository _queryRepository;
         private readonly IMapper _mapper;
 
-        public AnalyticsController(IQueryRepository queryRepository, IMapper mapper)
+        public AnalyticsController(IQueryRepository queryRepository, IMapper mapper, ApplicationDbContext dbContext, IConfiguration configuration)
         {
             _queryRepository = queryRepository;
             _mapper = mapper;
+            _dbContext = dbContext;
+            _configuration = configuration;
         }
 
         [HttpPost("CreatePosts/{authorId}")]
@@ -66,9 +70,66 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
                                   Author = item.Elements().First(i => i.Name.LocalName == "author").Value
                               };
 
-                var dateLimits = DateTime.Now.Year - 4;
+                var filterByYear = DateTime.Now.Year - 4;
 
-                List<Feed> feed = entries.OrderByDescending(o=>o.PubDate).Where(o => o.PubDate.Year > dateLimits).ToList();
+                List<Feed> feed = entries.OrderByDescending(o => o.PubDate).Where(o => o.PubDate.Year > filterByYear).ToList();
+
+                string urlAddress = string.Empty;
+                List<ArticleMatrix> articleMatrix = new();                
+                _ = int.TryParse(_configuration["ParallelTasksCount"], out int parallelTasksCount);
+
+                Console.WriteLine("Número máximo de Theads: " + parallelTasksCount.ToString());
+
+                
+                Stopwatch cronometro = Stopwatch.StartNew();
+                cronometro.Start();
+
+
+                Parallel.ForEach(feed, new ParallelOptions { MaxDegreeOfParallelism = parallelTasksCount }, async feed =>
+                {
+                    urlAddress = feed.Link;
+
+                    var httpClient = new HttpClient
+                    {
+                        BaseAddress = new Uri(urlAddress)
+                    };
+                    var result = httpClient.GetAsync("").Result;
+
+                    string strData = "";
+
+                    if(result.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        strData = result.Content.ReadAsStringAsync().Result;
+                        
+                        HtmlDocument htmlDocument = new();
+
+                        htmlDocument.LoadHtml(strData);
+
+                        ArticleMatrix articleMatrix = new()
+                        {
+                            AuthorId = authorId,
+                            Author = feed.Author,
+                            Type = feed.FeedType,
+                            Link = feed.Link,
+                            Title = feed.Title,
+                            PubDate = feed.PubDate,
+                        };
+
+                        string category = "Videos";
+                        if(htmlDocument.GetElementbyId("ImgCategory") != null)
+                        {
+                            category = htmlDocument.GetElementbyId("ImgCategory").GetAttributeValue("title", "");
+                        }
+
+                        articleMatrix.Category = category;
+                    }
+
+                });
+
+
+                cronometro.Stop();
+                Console.WriteLine("\n\n\nTempo de decorrido: " + cronometro.ElapsedMilliseconds + "Milissegundos");
+
 
                 return true;
             }
