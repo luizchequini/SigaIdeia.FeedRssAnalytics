@@ -5,6 +5,8 @@ using SigaIdeia.FeedRssAnalytics.Domain.Repositories.AbstractRepository;
 using SigaIdeia.FeedRssAnalyticsApi.DTOs;
 using HtmlAgilityPack;
 using System.Xml.Linq;
+using System.Globalization;
+using SigaIdeia.FeedRssAnalytics.Infra.Data.Orm;
 
 namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
 {
@@ -12,6 +14,11 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
     [ApiController]
     public class AnalyticsController : ControllerBase
     {
+        readonly CultureInfo culture = new("en-US");
+        private readonly ApplicationDbContext _dbContext;
+        private readonly IConfiguration _configuration;
+        private static readonly object _lockObj = new object();
+
         private readonly IQueryRepository _queryRepository;
         private readonly IMapper _mapper;
 
@@ -30,16 +37,38 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
             {
                 XDocument doc = XDocument.Load("https://www.c-sharpcorner.com/members/" + authorId + "/rss");
 
-                if(doc == null)
+                if (doc == null)
                 {
                     return false;
                 }
 
-                var entries = from item in doc.Descendants().First(i=>i.Name.LocalName=="channel").Elements()
-                              .Where(i=>i.Name.LocalName=="item")
-                              select item;
+                var entries = from item in doc.Descendants()
+                              .First(i => i.Name.LocalName == "channel").Elements()
+                              .Where(i => i.Name.LocalName == "item")
+                              select new Feed
+                              {
+                                  Content = item.Elements().First(i => i.Name.LocalName == "description").Value,
 
-                Console.WriteLine(entries.ToArray());
+                                  Link = (item.Elements().First(i => i.Name.LocalName == "link").Value).StartsWith("/")
+                                  ? "https://www.c-sharpcorner.com" + item.Elements().First(i => i.Name.LocalName == "link").Value
+                                  : item.Elements().First(i => i.Name.LocalName == "link").Value,
+
+                                  PubDate = Convert.ToDateTime(item.Elements().First(i => i.Name.LocalName == "pubDate").Value, culture),
+
+                                  Title = item.Elements().First(i => i.Name.LocalName == "title").Value,
+
+                                  FeedType = (item.Elements().First(i => i.Name.LocalName == "link").Value).ToLowerInvariant().Contains("blog")
+                                  ? "Blog"
+                                  : (item.Elements().First(i => i.Name.LocalName == "link").Value).ToLowerInvariant().Contains("news")
+                                  ? "News"
+                                  : "Article",
+
+                                  Author = item.Elements().First(i => i.Name.LocalName == "author").Value
+                              };
+
+                var dateLimits = DateTime.Now.Year - 4;
+
+                List<Feed> feed = entries.OrderByDescending(o=>o.PubDate).Where(o => o.PubDate.Year > dateLimits).ToList();
 
                 return true;
             }
