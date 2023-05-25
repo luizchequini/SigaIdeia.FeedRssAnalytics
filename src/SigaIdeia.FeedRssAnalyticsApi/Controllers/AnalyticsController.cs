@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
+using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using SigaIdeia.FeedRssAnalytics.Domain.Entities;
 using SigaIdeia.FeedRssAnalytics.Domain.Repositories.AbstractRepository;
-using SigaIdeia.FeedRssAnalyticsApi.DTOs;
-using HtmlAgilityPack;
-using System.Xml.Linq;
-using System.Globalization;
 using SigaIdeia.FeedRssAnalytics.Infra.Data.Orm;
-using System.Net.Http;
+using SigaIdeia.FeedRssAnalyticsApi.DTOs;
 using System.Diagnostics;
+using System.Globalization;
+using System.Xml.Linq;
 
 namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
 {
@@ -36,7 +35,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
         public async Task<bool> CreatPosts(string authorId)
         {
             authorId = "mahesh-chand";
-
+            //https://www.c-sharpcorner.com/members/mahesh-chand/rss
             try
             {
                 XDocument doc = XDocument.Load("https://www.c-sharpcorner.com/members/" + authorId + "/rss");
@@ -75,12 +74,12 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
                 List<Feed> feed = entries.OrderByDescending(o => o.PubDate).Where(o => o.PubDate.Year > filterByYear).ToList();
 
                 string urlAddress = string.Empty;
-                List<ArticleMatrix> articleMatrix = new();                
+                List<ArticleMatrix> articleMatrices = new();
                 _ = int.TryParse(_configuration["ParallelTasksCount"], out int parallelTasksCount);
 
                 Console.WriteLine("Número máximo de Theads: " + parallelTasksCount.ToString());
 
-                
+
                 Stopwatch cronometro = Stopwatch.StartNew();
                 cronometro.Start();
 
@@ -93,14 +92,17 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
                     {
                         BaseAddress = new Uri(urlAddress)
                     };
+                    
+                    //var result = await httpClient.GetAsync("");
                     var result = httpClient.GetAsync("").Result;
 
                     string strData = "";
 
-                    if(result.StatusCode == System.Net.HttpStatusCode.OK)
+                    if (result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
+                        //strData = await result.Content.ReadAsStringAsync();
                         strData = result.Content.ReadAsStringAsync().Result;
-                        
+
                         HtmlDocument htmlDocument = new();
 
                         htmlDocument.LoadHtml(strData);
@@ -116,19 +118,78 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
                         };
 
                         string category = "Videos";
-                        if(htmlDocument.GetElementbyId("ImgCategory") != null)
+                        if (htmlDocument.GetElementbyId("ImgCategory") != null)
                         {
                             category = htmlDocument.GetElementbyId("ImgCategory").GetAttributeValue("title", "");
                         }
 
                         articleMatrix.Category = category;
-                    }
 
+                        var view = htmlDocument.DocumentNode.SelectSingleNode("//span[@id='ViewCounts']");
+                        if (view != null)
+                        {
+                            articleMatrix.Views = view.InnerText;
+
+                            if (articleMatrix.Views.Contains('m'))
+                            {
+                                // slice notation [0..^1]
+                                articleMatrix.ViewsCount = decimal.Parse(articleMatrix.Views[0..^1]) * 1000000;
+                            }
+                            else if (articleMatrix.Views.Contains('k'))
+                            {
+                                articleMatrix.ViewsCount = decimal.Parse(articleMatrix.Views[0..^1]) * 1000;
+                            }
+                            else
+                            {
+                                _ = decimal.TryParse(articleMatrix.Views, out decimal viewCount);
+                                articleMatrix.ViewsCount = viewCount;
+                            }
+                        }
+                        else
+                        {
+                            var newsView = htmlDocument.DocumentNode.SelectSingleNode("//span[@id='spanNewsViews']");
+                            if (newsView != null)
+                            {
+                                articleMatrix.Views = newsView.InnerText;
+
+                                if (articleMatrix.Views.Contains('m'))
+                                {
+                                    // slice notation [0..^1]
+                                    articleMatrix.ViewsCount = decimal.Parse(articleMatrix.Views[0..^1]) * 1000000;
+                                }
+                                else if (articleMatrix.Views.Contains('k'))
+                                {
+                                    articleMatrix.ViewsCount = decimal.Parse(articleMatrix.Views[0..^1]) * 1000;
+                                }
+                                else
+                                {
+                                    _ = decimal.TryParse(articleMatrix.Views, out decimal viewCount);
+                                    articleMatrix.ViewsCount = viewCount;
+                                }
+                            }
+                            else
+                            {
+                                articleMatrix.ViewsCount = 0;
+                            }
+                        }
+
+                        var like = htmlDocument.DocumentNode.SelectSingleNode("//span[@id='LabelLakeCount']");
+                        if (like != null)
+                        {
+                            _ = int.TryParse(like.InnerText, out int likes);
+                            articleMatrix.Likes = likes;
+                        }
+
+                        lock (_lockObj)
+                        {
+                            articleMatrices.Add(articleMatrix);
+                        }
+                    }
                 });
 
 
                 cronometro.Stop();
-                Console.WriteLine("\n\n\nTempo de decorrido: " + cronometro.ElapsedMilliseconds + "Milissegundos");
+                Console.WriteLine("\n\n\nTempo de decorrido: " + cronometro.ElapsedMilliseconds + " Milissegundos");
 
 
                 return true;
