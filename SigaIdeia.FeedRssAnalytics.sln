@@ -11,9 +11,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.Domain", "2.Domain", "{2D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.Infra", "3.Infra", "{01D8E6B5-B69F-4CED-A568-BFC9D1D2CF86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SigaIdeia.FeedRssAnalytics.Domain", "src\SigaIdeia.FeedRssAnalytics.Domain\SigaIdeia.FeedRssAnalytics.Domain.csproj", "{56B9CAC8-D9D1-4950-ADDF-D303D568D61C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SigaIdeia.FeedRssAnalytics.Domain", "src\SigaIdeia.FeedRssAnalytics.Domain\SigaIdeia.FeedRssAnalytics.Domain.csproj", "{56B9CAC8-D9D1-4950-ADDF-D303D568D61C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SigaIdeia.FeedRssAnalytics.Infra", "src\SigaIdeia.FeedRssAnalytics.Infra\SigaIdeia.FeedRssAnalytics.Infra.csproj", "{81921131-0933-4DD8-9851-E01516803CE6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SigaIdeia.FeedRssAnalytics.Infra", "src\SigaIdeia.FeedRssAnalytics.Infra\SigaIdeia.FeedRssAnalytics.Infra.csproj", "{81921131-0933-4DD8-9851-E01516803CE6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0.CoreShare", "0.CoreShare", "{07444335-D249-41F2-B400-2968B741C552}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SigaIdeia.FeedRssAnalytics.CoreShare", "src\SigaIdeia.FeedRssAnalytics.CoreShare\SigaIdeia.FeedRssAnalytics.CoreShare.csproj", "{9782E398-8AB0-47A0-B8E4-E9A8B5BCBD9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,10 @@ Global
 		{81921131-0933-4DD8-9851-E01516803CE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81921131-0933-4DD8-9851-E01516803CE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81921131-0933-4DD8-9851-E01516803CE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9782E398-8AB0-47A0-B8E4-E9A8B5BCBD9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9782E398-8AB0-47A0-B8E4-E9A8B5BCBD9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9782E398-8AB0-47A0-B8E4-E9A8B5BCBD9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9782E398-8AB0-47A0-B8E4-E9A8B5BCBD9F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,6 +49,7 @@ Global
 		{F5E39A75-8BBE-4355-A7A0-55A69D38864C} = {0F500F6B-4E81-4E60-91EE-1AF9E3A1BCDB}
 		{56B9CAC8-D9D1-4950-ADDF-D303D568D61C} = {2D28F11E-584B-4652-A4DC-423AAFF7D827}
 		{81921131-0933-4DD8-9851-E01516803CE6} = {01D8E6B5-B69F-4CED-A568-BFC9D1D2CF86}
+		{9782E398-8AB0-47A0-B8E4-E9A8B5BCBD9F} = {07444335-D249-41F2-B400-2968B741C552}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {86C0E6B0-2187-42F7-9294-AB5A1513F904}

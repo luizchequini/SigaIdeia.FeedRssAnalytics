@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using SigaIdeia.FeedRssAnalytics.CoreShare.Configurations;
 using SigaIdeia.FeedRssAnalytics.Domain.Entities;
 using SigaIdeia.FeedRssAnalytics.Domain.Repositories.AbstractRepository;
 using SigaIdeia.FeedRssAnalytics.Infra.Data.Orm;
@@ -22,25 +24,31 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
 
         private readonly IQueryRepository _queryRepository;
         private readonly IMapper _mapper;
-
-        public AnalyticsController(IQueryRepository queryRepository, IMapper mapper, ApplicationDbContext dbContext, IConfiguration configuration)
+        private readonly AppSettings _appSettings;
+        public AnalyticsController(IQueryRepository queryRepository, 
+                                    IMapper mapper, 
+                                    ApplicationDbContext dbContext,
+                                    IConfiguration configuration, 
+                                    IOptions<AppSettings> appSettings)
         {
             _queryRepository = queryRepository;
             _mapper = mapper;
             _dbContext = dbContext;
             _configuration = configuration;
+            _appSettings = appSettings.Value;
         }
 
         [HttpPost("CreatePosts/{authorId}")]
         public async Task<bool> CreatPosts(string authorId)
         {
+            //authorId = "sourabh-sharma43";
             //authorId = "prasad-nair3";
             //authorId = "sonu-sathyadas";
             //authorId = "mahesh-chand";
             //https://www.c-sharpcorner.com/members/mahesh-chand/rss
             try
             {
-                XDocument doc = XDocument.Load("https://www.c-sharpcorner.com/members/" + authorId + "/rss");
+                XDocument doc = XDocument.Load($"{_appSettings.BaseUrl}/members/{authorId}/rss");
 
                 if (doc == null)
                 {
@@ -55,7 +63,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
                                   Content = item.Elements().First(i => i.Name.LocalName == "description").Value,
 
                                   Link = (item.Elements().First(i => i.Name.LocalName == "link").Value).StartsWith("/")
-                                  ? "https://www.c-sharpcorner.com" + item.Elements().First(i => i.Name.LocalName == "link").Value
+                                  ? $"{_appSettings.BaseUrl}" + item.Elements().First(i => i.Name.LocalName == "link").Value
                                   : item.Elements().First(i => i.Name.LocalName == "link").Value,
 
                                   PubDate = Convert.ToDateTime(item.Elements().First(i => i.Name.LocalName == "pubDate").Value, culture),
@@ -194,7 +202,7 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
 
                 foreach (ArticleMatrix item in articleMatrices)
                 {
-                    if(item.Category == "Videos")
+                    if (item.Category == "Videos")
                     {
                         item.Type = "Videos";
                     }

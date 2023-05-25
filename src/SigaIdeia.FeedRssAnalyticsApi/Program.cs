@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SigaIdeia.FeedRssAnalytics.CoreShare.Configurations;
 using SigaIdeia.FeedRssAnalytics.Domain.Repositories.AbstractRepository;
 using SigaIdeia.FeedRssAnalytics.Infra.Data.Orm;
 using SigaIdeia.FeedRssAnalytics.Infra.Repositories.ImplementationsReposirory;
@@ -17,6 +18,10 @@ namespace SigaIdeia.FeedRssAnalyticsApi
             ConfigurationManager configuration = builder.Configuration;
 
             // Add services to the container.
+           
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("ConnStr")));
+
+            builder.Services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
 
             builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
@@ -34,7 +39,6 @@ namespace SigaIdeia.FeedRssAnalyticsApi
             //builder.Services.AddSwaggerGen();
             builder.Services.AddSwaggerConfiguration();
 
-            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("ConnStr")));
 
             builder.Services.AddScoped<IQueryRepository, QueryRepository>();
             builder.Services.AddScoped<IQueryADORepository, QueryADORepository>();
