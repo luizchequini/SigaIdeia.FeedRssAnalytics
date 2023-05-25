@@ -34,7 +34,9 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
         [HttpPost("CreatePosts/{authorId}")]
         public async Task<bool> CreatPosts(string authorId)
         {
-            authorId = "mahesh-chand";
+            //authorId = "prasad-nair3";
+            //authorId = "sonu-sathyadas";
+            //authorId = "mahesh-chand";
             //https://www.c-sharpcorner.com/members/mahesh-chand/rss
             try
             {
@@ -92,16 +94,16 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
                     {
                         BaseAddress = new Uri(urlAddress)
                     };
-                    
-                    //var result = await httpClient.GetAsync("");
-                    var result = httpClient.GetAsync("").Result;
+
+                    var result = await httpClient.GetAsync("");
+                    //var result = httpClient.GetAsync("").Result;
 
                     string strData = "";
 
                     if (result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        //strData = await result.Content.ReadAsStringAsync();
-                        strData = result.Content.ReadAsStringAsync().Result;
+                        strData = await result.Content.ReadAsStringAsync();
+                        //strData = result.Content.ReadAsStringAsync().Result;
 
                         HtmlDocument htmlDocument = new();
 
@@ -187,6 +189,19 @@ namespace SigaIdeia.FeedRssAnalyticsApi.Controllers
                     }
                 });
 
+
+                _dbContext.ArticleMatrices?.RemoveRange(_dbContext.ArticleMatrices.Where(x => x.AuthorId == authorId));
+
+                foreach (ArticleMatrix item in articleMatrices)
+                {
+                    if(item.Category == "Videos")
+                    {
+                        item.Type = "Videos";
+                    }
+                    item.Category = item.Category?.Replace("&amp", "&");
+                    await _dbContext.ArticleMatrices.AddAsync(item);
+                }
+                await _dbContext.SaveChangesAsync();
 
                 cronometro.Stop();
                 Console.WriteLine("\n\n\nTempo de decorrido: " + cronometro.ElapsedMilliseconds + " Milissegundos");
